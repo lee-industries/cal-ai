@@ -22,6 +22,8 @@ type FoodDocument = {
   notes?: string;
 };
 
+type NewFoodDocument = Omit<FoodDocument, "_id">;
+
 function mapFoodDocument(document: FoodDocument): Food {
   return {
     id: document._id.toString(),
@@ -69,7 +71,7 @@ export async function createFood(input: CreateFoodInput): Promise<Food> {
   const database = await getDatabase();
   const foodsCollection = database.collection<FoodDocument>("foods");
 
-  const documentToInsert = {
+  const documentToInsert: NewFoodDocument = {
     userId: input.userId,
     name: input.name,
     calories: input.calories,

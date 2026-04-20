@@ -25,6 +25,8 @@ type DailyLogEntryDocument = {
   createdAt: string;
 };
 
+type NewDailyLogEntryDocument = Omit<DailyLogEntryDocument, "_id">;
+
 function getTodayDateString(date = new Date()): string {
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: "America/Chicago",
@@ -72,7 +74,7 @@ export async function createDailyLogEntry(
     database.collection<DailyLogEntryDocument>("dailyLogEntries");
   const today = getTodayDateString();
 
-  const documentToInsert = {
+  const documentToInsert: NewDailyLogEntryDocument = {
     userId: input.userId,
     date: today,
     foodId: input.foodId,
