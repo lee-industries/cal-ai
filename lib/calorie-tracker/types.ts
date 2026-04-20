@@ -1,5 +1,6 @@
 export type Food = {
   id: string;
+  userId: string;
   name: string;
   calories: number;
   servingSize?: string;
@@ -15,6 +16,7 @@ export type FoodAlias = {
 
 export type DailyLogEntry = {
   id: string;
+  userId: string;
   date: string;
   foodId?: Food["id"];
   foodNameSnapshot: string;
