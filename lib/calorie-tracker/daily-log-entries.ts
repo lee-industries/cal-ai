@@ -1,4 +1,4 @@
-import type { ObjectId } from "mongodb";
+import type { WithId } from "mongodb";
 
 import { getDatabase } from "@/lib/mongodb";
 import type { DailyLogEntry } from "@/lib/calorie-tracker/types";
@@ -13,7 +13,6 @@ export type CreateDailyLogEntryInput = {
 };
 
 type DailyLogEntryDocument = {
-  _id: ObjectId;
   userId: string;
   date: string;
   foodId?: string;
@@ -25,8 +24,6 @@ type DailyLogEntryDocument = {
   createdAt: string;
 };
 
-type NewDailyLogEntryDocument = Omit<DailyLogEntryDocument, "_id">;
-
 function getTodayDateString(date = new Date()): string {
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: "America/Chicago",
@@ -34,7 +31,7 @@ function getTodayDateString(date = new Date()): string {
 }
 
 function mapDailyLogEntryDocument(
-  document: DailyLogEntryDocument,
+  document: WithId<DailyLogEntryDocument>,
 ): DailyLogEntry {
   return {
     id: document._id.toString(),
@@ -74,7 +71,7 @@ export async function createDailyLogEntry(
     database.collection<DailyLogEntryDocument>("dailyLogEntries");
   const today = getTodayDateString();
 
-  const documentToInsert: NewDailyLogEntryDocument = {
+  const documentToInsert: DailyLogEntryDocument = {
     userId: input.userId,
     date: today,
     foodId: input.foodId,

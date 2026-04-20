@@ -1,4 +1,4 @@
-import { ObjectId, type Filter } from "mongodb";
+import { ObjectId, type Filter, type WithId } from "mongodb";
 
 import { getDatabase } from "@/lib/mongodb";
 import type { Food } from "@/lib/calorie-tracker/types";
@@ -13,7 +13,6 @@ export type CreateFoodInput = {
 };
 
 type FoodDocument = {
-  _id: ObjectId;
   userId: string;
   name: string;
   calories: number;
@@ -22,9 +21,7 @@ type FoodDocument = {
   notes?: string;
 };
 
-type NewFoodDocument = Omit<FoodDocument, "_id">;
-
-function mapFoodDocument(document: FoodDocument): Food {
+function mapFoodDocument(document: WithId<FoodDocument>): Food {
   return {
     id: document._id.toString(),
     userId: document.userId,
@@ -71,7 +68,7 @@ export async function createFood(input: CreateFoodInput): Promise<Food> {
   const database = await getDatabase();
   const foodsCollection = database.collection<FoodDocument>("foods");
 
-  const documentToInsert: NewFoodDocument = {
+  const documentToInsert: FoodDocument = {
     userId: input.userId,
     name: input.name,
     calories: input.calories,
